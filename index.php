@@ -9,63 +9,22 @@
         require 'auxiliar.php';
 
         const OP = ['+','-','*','/'];
-        const PAR = ['op1','op2','op'];
+        const PAR = ['op' => '+', 'op1' => '0', 'op2' => '0'];
+        //creamos los valores por defecto desde el array PAR (que hemos aprovechado)
 
         $error = [];
 
-        //  Comprobación de parámetros
-        $par = array_keys($_GET);
-        sort($par);
+        //Comprueba parametros
+        extract(compruebaParametros(PAR, $error));
 
-        if(empty($_GET)){
-            $op1 = '0';
-            $op2 = '0';
-            $op = '+';
-        } elseif ($par == PAR) {
-            $op1 = trim($_GET['op1']);
-            $op2 = trim($_GET['op2']);
-            $op = trim($_GET['op']);
-        } else {
-            $error[] = "Los parámetros recibidos no son los correctos.";
-        }
-
-
-
-        if (empty($error)) {
-          if (!is_numeric($op1)) {
-            $error[] = "El primer operando no es un número.";
-          }
-          if (!is_numeric($op2)) {
-            $error[] = "El segundo operando no es un número.";
-          }
-          if (!in_array($op, OP)) {
-            $error[] = "El operador no es valido.";
-          }
-        }
+        compruebaValores($op1, $op2, $op, OP, $error);
 
         formulario($op1, $op2, $op, OP);
 
-        if (empty($error)) :
-          $res = "";
-          switch ($op) {
-            case '+':
-              $res = $op1 + $op2;
-            break;
-
-            case '-':
-              $res = $op1 - $op2;
-            break;
-
-            case '*':
-              $res = $op1 * $op2;
-            break;
-
-            case '/':
-              $res = $op1 / $op2;
-            break;
-          }
-        ?>
-          <h3>Resultado: <?= $res ?></h3>
-        <?php endif; ?>
+        if (empty($error)):
+            mostrarResultado($op1,$op2, $op);
+        else:
+            muestraErrores($error);
+        endif;  ?>
     </body>
 </html>
